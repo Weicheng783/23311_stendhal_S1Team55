@@ -19,7 +19,7 @@ import utilities.QuestHelper;
 
 public class DojoNPCTest extends ZonePlayerAndNPCTestImpl {
 	
-	private static final String REPLY_TRAIN = "At your level of experience, your attack strength is too high to train here at this time.";
+	private static final String REPLY_TRAIN = "You currently can't train as your attack level is too high, however the fee to #train for you would be 625 money.";
 	private static final String REPLY_HELLO = "This is the assassins' dojo.";
 
 	private static final String ZONE_NAME = "dojoZone";

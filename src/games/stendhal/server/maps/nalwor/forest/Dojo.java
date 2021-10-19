@@ -118,25 +118,26 @@ public class Dojo implements ZoneConfigurator {
 		samurai.addOffer("I can offer you a #training session for a #fee.");
 		samurai.addQuest("I don't need any help, but I can let you to #train for a #fee if you have been approved by the assassins' HQ.");
 		samurai.addHelp("This is the assassins' dojo. I can let you #train here for a #fee if you're in good with HQ.");
-
-		samurai.add(ConversationStates.ATTENDING,
-				FEE_PHRASES,
-				null,
-				ConversationStates.ATTENDING,
-				null,
-				new ChatAction() {
-					@Override
-					public void fire(final Player player, final Sentence sentence, final EventRaiser raiser) {
-						samurai.say("The fee to #train for your skill level is " + dojoArea.calculateFee(player.getAtk()) + " money.");
-					}
-				});
-
+		
 		final ChatCondition meetsLevelCapCondition = new ChatCondition() {
 			@Override
 			public boolean fire(final Player player, final Sentence sentence, final Entity npc) {
 				return dojoArea.meetsLevelCap(player, player.getAtk());
 			}
 		};
+
+		samurai.add(ConversationStates.ATTENDING,
+				FEE_PHRASES,
+				meetsLevelCapCondition,
+				ConversationStates.ATTENDING,
+				null,
+				new ChatAction() {
+					@Override
+					public void fire(final Player player, final Sentence sentence, final EventRaiser raiser) {
+						samurai.say("You currently can't train as your attack level is too high, however the fee to #train for you would be " + dojoArea.calculateFee(player.getAtk()) + " money.");
+					}
+				});
+
 
 		final ChatCondition canAffordFeeCondition = new ChatCondition() {
 			@Override
