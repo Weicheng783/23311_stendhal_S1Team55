@@ -188,14 +188,12 @@ public class ElvishArmorTest {
 		}
 	}
 
-	
+	/**
+	 * We test if the elvish hat should be one of the requirements of the quest.
+	 */
 	@Test
 	public void testElvishHat() {
 		final Player player = PlayerTestHelper.createPlayer("bob");
-//		System.out.println(NEEDEDITEMS);
-		
-//		System.out.println(player.equipToInventoryOnly(SingletonRepository.getEntityManager().getItem("cheese")));
-//		PlayerTestHelper.equipWithItem(player, "cheese");
 		PlayerTestHelper.equipWithItem(player,"elvish hat");
 		npcEngine.setCurrentState(QUESTION_1);
 		npcEngine.step(player, "elvish hat");
