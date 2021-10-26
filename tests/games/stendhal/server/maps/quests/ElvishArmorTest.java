@@ -16,6 +16,9 @@ import static games.stendhal.server.entity.npc.ConversationStates.ATTENDING;
 import static games.stendhal.server.entity.npc.ConversationStates.IDLE;
 import static games.stendhal.server.entity.npc.ConversationStates.QUESTION_1;
 import static games.stendhal.server.entity.npc.ConversationStates.QUEST_OFFERED;
+
+//import static games.stendhal.server.entity.npc.ConversationStates.QUEST_ITEM_BROUGHT;
+
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
@@ -65,7 +68,7 @@ public class ElvishArmorTest {
 
 	private static final List<String> NEEDEDITEMS = Arrays.asList(
 			"elvish armor", "elvish legs", "elvish boots", "elvish sword",
-			"elvish cloak", "elvish shield");
+			"elvish cloak", "elvish shield", "elvish hat");
 
 	private static SpeakerNPC npc;
 
@@ -186,6 +189,20 @@ public class ElvishArmorTest {
 	}
 
 	/**
+	 * We test if the elvish hat should be one of the requirements of the quest.
+	 */
+	@Test
+	public void testElvishHat() {
+		final Player player = PlayerTestHelper.createPlayer("bob");
+		PlayerTestHelper.equipWithItem(player,"elvish hat");
+		npcEngine.setCurrentState(QUESTION_1);
+		npcEngine.step(player, "elvish hat");
+		assertThat(npcEngine.getCurrentState(), is(QUESTION_1));
+		assertThat("elvish hat", getReply(npc), is("Excellent work. Is there more that you plundered?"));
+		
+	}
+	
+	/**
 	 * Player says the name of a required item he has got.
 	 * and repeats it (brings it twice).
 	 */
@@ -243,7 +260,8 @@ public class ElvishArmorTest {
 		assertThat(npcEngine.getCurrentState(), is(QUESTION_1));
 		assertThat(getReply(npc), is("I don't think that's a piece of elvish armor..."));
 	}
-
+	
+	
 	/**
 	 * Tests for question1toIdle.
 	 */
