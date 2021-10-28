@@ -141,18 +141,35 @@ public class ReverseArrow extends AbstractQuest implements
 			// check first row
 			for (int i = 1; i <= 3; i++) {
 				final Token token = tokens.get(i);
-				if (token.getX() != topX - 1 + i - 1
-						|| token.getY() != topY + 1) {
-					return false;
+				if (i == 3) {
+					if (((token.getX() != topX - 1 + i - 1
+							|| token.getY() != topY + 1)) && i !=3) {
+						return false;
+					}
+				}
+				else {
+					if (((token.getX() != topX - 1 + i - 1
+							|| token.getY() != topY + 1)) && i != 2) {
+						return false;
+					}
+					
 				}
 			}
 
 			// check second row
 			for (int i = 4; i <= 8; i++) {
 				final Token token = tokens.get(i);
-				if (token.getX() != topX - 2 + i - 4
-						|| token.getY() != topY + 2) {
-					return false;
+				if (i == 8) {
+					if (token.getX() == topX - 2 + i - 4
+							|| token.getY() != topY + 3) {
+						return false;
+					}
+				}
+				else {
+					if (token.getX() == topX - 2 + i - 4
+							|| token.getY() != topY + 2) {
+						return false;
+					}
 				}
 			}
 
