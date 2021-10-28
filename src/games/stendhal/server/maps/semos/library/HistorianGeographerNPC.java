@@ -38,7 +38,8 @@ public class HistorianGeographerNPC implements ZoneConfigurator {
 	 * @param	attributes	Configuration attributes.
 	 */
 	@Override
-	public void configureZone(final StendhalRPZone zone, final Map<String, String> attributes) {
+//	Modify permissions to make positions variable
+	public void configureZone(StendhalRPZone zone, Map<String, String> attributes) {
 		buildSemosLibraryArea(zone);
 	}
 
