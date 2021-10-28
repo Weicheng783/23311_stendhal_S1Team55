@@ -2,6 +2,18 @@ Changelog
 ---------
 ---------
 
+1.36uom
+
+- bug fixes and improvements
+  - Solar and Glacier centaurs now insusceptible to their attacks of their own element
+  - Elvish hat is now a requirement for NPC Lupos' quest to collect all elvish armour
+  - NPC Zynn Iwohos now awards XP when you ask them questions
+  - Deniran Potion Shop now has blackboards advertising stock
+  - You can no longer use teleportation scrolls whilst poisoned
+  - Bestiary item no only shows the tracking for animals that have been killed so far
+  - NPC Gamblos now accepts the arrow design
+  - NPC Omura Sumitada's rejects you sooner if your strength is too high
+
 1.36
 *world*
 - building Mine Town Revival Weeks as group quest

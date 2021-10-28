@@ -201,3 +201,19 @@ Notable contributors:
 - SnowFlake
   · Maps maker
   · NPCs
+- Xinan Zou
+  · Bug fixer
+- Weicheng Ao
+  · Bug fixer
+- Yinan Wang
+  · Bug fixer
+- Ruotong Ding
+  · Bug fixer
+- Kenzi Marcel
+  ·  fixer
+- Zhongtian Zheng
+  · Bug fixer
+- Ali Al Ghamdi
+  · Bug fixer
+- Daniel Ross
+  · Bug fixer
