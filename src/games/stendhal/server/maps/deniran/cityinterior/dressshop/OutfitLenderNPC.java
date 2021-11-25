@@ -43,6 +43,7 @@ import games.stendhal.server.util.TimeUtil;
 
 
 public class OutfitLenderNPC implements ZoneConfigurator {
+	private static OutfitLenderNPC instance;
 
 	private static final Logger logger = Logger.getLogger(OutfitLenderNPC.class);
 
@@ -52,7 +53,7 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 	private static final int endurance = 10 * MathHelper.MINUTES_IN_ONE_HOUR;
 
 
-	private enum OutfitType {
+	public enum OutfitType {
 		// set hair to -1 to not be drawn
 		BEAR_BLUE("dress=0,hat=993"),
 		BEAR_BROWN("dress=0,hat=994"),
@@ -68,10 +69,12 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 		public String toString() {
 			return outfit_str;
 		}
+		
+		
 	};
 
 
-	private class DeniranOutfit {
+	public class DeniranOutfit {
 		private final String label;
 		private final OutfitType outfitType;
 		private final int price;
@@ -137,19 +140,8 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 		zone.add(lender);
 	}
 
-	private void initShop(final StendhalRPZone zone) {
-		final List<DeniranOutfit> outfitList = new LinkedList<DeniranOutfit>() {{
-			add(new DeniranOutfit("blue bear", OutfitType.BEAR_BLUE, 2500));
-			add(new DeniranOutfit("brown bear", OutfitType.BEAR_BROWN, 2500));
-			add(new DeniranOutfit("superstendhal", OutfitType.SUPERSTENDHAL, 5000));
-		}};
-
-		// TODO: add special outfit during Mine Town
-		/*
-		if (Occasion.MINETOWN) {
-
-		}
-		*/
+	public void initShop(final StendhalRPZone zone) {
+		final List<DeniranOutfit> outfitList = createOutfitList();
 
 		final Map<String, Integer> prices = new LinkedHashMap<>();
 		for (final DeniranOutfit outfit: outfitList) {
@@ -216,6 +208,32 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 		}.addOutfitChanger(lender, behaviour, "rent", false, true);
 
 
+		final ShopSign catalog = outfitCatalog(outfitList);
+		catalog.setEntityClass("book_turquoise");
+		catalog.setPosition(9, 4);
+
+		zone.add(catalog);
+		
+		
+	}
+
+	public List<DeniranOutfit> createOutfitList() {
+		final List<DeniranOutfit> outfitList = new LinkedList<DeniranOutfit>() {{
+			add(new DeniranOutfit("blue bear", OutfitType.BEAR_BLUE, 2500));
+			add(new DeniranOutfit("brown bear", OutfitType.BEAR_BROWN, 2500));
+			add(new DeniranOutfit("superstendhal", OutfitType.SUPERSTENDHAL, 5000));
+		}};
+
+		// TODO: add special outfit during Mine Town
+		/*
+		if (Occasion.MINETOWN) {
+
+		}
+		*/
+		return outfitList;
+	}
+
+	public ShopSign outfitCatalog(final List<DeniranOutfit> outfitList) {
 		// a catalog for players to browse
 		final ShopSign catalog = new ShopSign(null, null, null, true) {
 			@Override
@@ -223,16 +241,7 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 				if (user instanceof Player) {
 					final Player player = (Player) user;
 
-					final StringBuilder toSend = new StringBuilder();
-					final int outfitCount = outfitList.size();
-
-					for (int idx = 0; idx < outfitCount; idx++) {
-						final DeniranOutfit of = outfitList.get(idx);
-						toSend.append(of.getLabel() + ";" + of.getOutfitString() + ";" + of.getPrice());
-						if (idx < outfitCount - 1) {
-							toSend.append(":");
-						}
-					}
+					final StringBuilder toSend = toSendInspection(outfitList);
 
 					player.addEvent(new ShowOutfitListEvent("Deniran Dress Shop", lender.getName() + " rents out the following outfits", toSend.toString()));
 					player.notifyWorldAboutChanges();
@@ -242,10 +251,51 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 
 				return false;
 			}
-		};
-		catalog.setEntityClass("book_turquoise");
-		catalog.setPosition(9, 4);
 
-		zone.add(catalog);
+			public StringBuilder toSendInspection(final List<DeniranOutfit> outfitList) {
+				final StringBuilder toSend = new StringBuilder();
+				final int outfitCount = outfitList.size();
+
+				for (int idx = 0; idx < outfitCount; idx++) {
+					final DeniranOutfit of = outfitList.get(idx);
+					toSend.append(of.getLabel() + ";" + of.getOutfitString() + ";" + of.getPrice());
+					if (idx < outfitCount - 1) {
+						toSend.append(":");
+					}
+				}
+				return toSend;
+			}
+		};
+		return catalog;
 	}
+	
+	 public static OutfitLenderNPC getOutfitLenderNPC() {
+		  if(instance!=null) {
+		   return instance;
+		  }
+		  else {
+		   instance = new OutfitLenderNPC();
+		  }
+		  return instance;
+		   
+	 }
+	 public SpeakerNPC getNPC() {
+		  return lender;
+	 }
+//		 public ShopSign getSellShopSign() {
+//		  return ;
+//		 }
+//		 public ShopSign getBuyShopSign() {
+//		  return sign_buy;
+//		}
+//	 public String getOutfitType() {
+//		 return ;
+//	 }
+
+//	public static enum getOutfitType() {
+//		private final OutfitType outfitType;
+//		// TODO Auto-generated method stub
+//		return OutfitType;
+//	}
+
 }
