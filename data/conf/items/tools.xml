@@ -244,9 +244,13 @@
   <item name="Sleeping Bag">
     <type class="tool" subclass="sleeping_bag" tileid="-1"/>
     <description>You see a sleeping bag. It can be used to heal yourself</description>
-    <implementation class-name="games.stendhal.server.entity.item.Item"/>
+    <implementation class-name="games.stendhal.server.entity.item.Drink"/>
     <attributes>
-      <menu value="Use|Use"/>
+      <amount value="9000"/>
+      <frequency value="70"/>
+      <quantity value="1"/>
+      <regen value="2"/>
+      <menu value="Drink|Use"/>
     </attributes>
     <weight value="1.0"/>
     <value value="1"/>

@@ -90,6 +90,9 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 	 * have any, or if the behavior is implemented in a subclass.
 	 */
 	private UseBehavior useBehavior;
+	
+	//change here
+	private int left;
 
 	/**
 	 *
@@ -352,6 +355,33 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 
 		return getAttackRate();
 	}
+	
+	
+	//change here
+	public int getRegen() {
+		return getInt("regen");
+	}
+	/**
+	 * Consumes a part of this item.
+	 *
+	 * @return The amount that has been consumed
+	 */
+	public int consume() {
+		// note that amount and regen are negative for poison
+		int consumedAmount=0;
+
+		//if (Math.abs(left) < Math.abs(getRegen())) {
+			//consumedAmount = left;
+			//left = 0;
+		//} else {
+		consumedAmount += getRegen();
+		//left += getRegen();
+		//}
+
+		return consumedAmount;
+	}
+	
+	//change here
 
 	/**
 	 * Retrieves default attack rate for items.
