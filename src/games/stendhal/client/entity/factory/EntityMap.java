@@ -147,6 +147,9 @@ public final class EntityMap {
 		register("item", "club", "wizard_staff", UseableItem.class);
 		register("item", "misc", "seed", UseableItem.class);
 		register("item", "misc", "bulb", UseableItem.class);
+		
+		// Sleeping Bag is a new client side object 
+		register("item", "tool", "sleeping_bag", UseableItem.class);
 
 		register("item", "resource", null, StackableItem.class);
 

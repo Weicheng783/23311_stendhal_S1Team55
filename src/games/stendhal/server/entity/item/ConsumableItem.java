@@ -72,6 +72,7 @@ public class ConsumableItem extends StackableItem implements Comparable<Consumab
 
 		left = getAmount();
 		feeder = FeederFactory.get(this);
+//		System.out.println(this.getName());
 	}
 
 	/**
@@ -115,6 +116,7 @@ public class ConsumableItem extends StackableItem implements Comparable<Consumab
 			left -= getRegen();
 		}
 
+		System.out.println("you consumed "+this.getName());
 		return consumedAmount;
 	}
 

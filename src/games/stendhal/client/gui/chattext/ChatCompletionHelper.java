@@ -65,6 +65,8 @@ public final class ChatCompletionHelper extends KeyAdapter {
 	public void keyPressed(final KeyEvent e) {
 
 		final int keypressed = e.getKeyCode();
+		
+		
 
 		if (keypressed == KeyEvent.VK_TAB) {
 			if (lastkeypressed != KeyEvent.VK_TAB) {

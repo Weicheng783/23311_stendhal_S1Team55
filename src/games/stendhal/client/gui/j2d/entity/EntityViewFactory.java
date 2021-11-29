@@ -129,6 +129,9 @@ public class EntityViewFactory {
 		register("blood", null, null, Blood2DView.class);
 
 		register("creature", "ent", null, BossCreature2DView.class);
+		
+		// We register the new sleeping bag item here.
+		register("item", "tool", "sleeping_bag", UseableItem2DView.class);
 
 		register("growing_entity_spawner", "items/grower/wood_grower", null, CarrotGrower2DView.class);
 		register("growing_entity_spawner", "items/grower/carrot_grower", null, CarrotGrower2DView.class);

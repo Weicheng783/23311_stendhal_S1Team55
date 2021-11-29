@@ -20,7 +20,7 @@ import games.stendhal.common.ErrorBuffer;
  *
  * @author Martin Fuchs
  */
-class SlashActionCommand extends ErrorBuffer {
+public class SlashActionCommand extends ErrorBuffer {
 
 	private String name;
 	private SlashAction action;

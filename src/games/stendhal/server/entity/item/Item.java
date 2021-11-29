@@ -13,6 +13,7 @@
 package games.stendhal.server.entity.item;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import org.apache.log4j.Logger;
 
 import games.stendhal.common.MathHelper;
 import games.stendhal.common.Rand;
+import games.stendhal.common.constants.Events;
 import games.stendhal.common.constants.Nature;
 import games.stendhal.common.grammar.Grammar;
 import games.stendhal.server.core.engine.ItemLogger;
@@ -38,6 +40,7 @@ import games.stendhal.server.entity.status.StatusType;
 import marauroa.common.game.Definition;
 import marauroa.common.game.Definition.Type;
 import marauroa.common.game.RPClass;
+import marauroa.common.game.RPEvent;
 import marauroa.common.game.RPObject;
 import marauroa.common.game.RPSlot;
 
@@ -90,9 +93,14 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 	 * have any, or if the behavior is implemented in a subclass.
 	 */
 	private UseBehavior useBehavior;
-	
-	//change here
-	private int left;
+
+	private int flag;
+
+	private int playerx;
+
+	private int playery;
+
+	private int counter;
 
 	/**
 	 *
@@ -361,27 +369,7 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 	public int getRegen() {
 		return getInt("regen");
 	}
-	/**
-	 * Consumes a part of this item.
-	 *
-	 * @return The amount that has been consumed
-	 */
-	public int consume() {
-		// note that amount and regen are negative for poison
-		int consumedAmount=0;
 
-		//if (Math.abs(left) < Math.abs(getRegen())) {
-			//consumedAmount = left;
-			//left = 0;
-		//} else {
-		consumedAmount += getRegen();
-		//left += getRegen();
-		//}
-
-		return consumedAmount;
-	}
-	
-	//change here
 
 	/**
 	 * Retrieves default attack rate for items.
@@ -715,6 +703,17 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 	 *
 	 */
 	public void onPutOnGround(final Player player) {
+		if("sleeping bag".equals(getName())) {
+			if(flag == 3 || flag == 2 || flag == 1) {
+				player.sendPrivateText("Continue to sleep...");
+			}
+			else {
+				player.sendPrivateText("Ownership confirmed. You are now enter sleeping status...");
+				player.notifyWorldAboutChanges();
+				flag = 0;
+				HealLoop(player);				
+			}
+		}
 		onPutOnGround(true);
 	}
 
@@ -732,9 +731,13 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 
 	public void onRemoveFromGround() {
 		// stop the timer so that the item won't degrade anymore
+
 		SingletonRepository.getTurnNotifier().dontNotify(this);
 		if (plantGrower != null) {
 			plantGrower.onFruitPicked(this);
+		}
+		if("sleeping bag".equals(getName())) {
+			flag = 1;
 		}
 	}
 
@@ -956,9 +959,16 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 	 * @return unknown, see the note above
 	 */
 	public boolean onEquipped(RPEntity equipper, String slot) {
-
+		final String tool = getName();
 		// this.prevEntity = equipper;
 		// this.prevSlot   = slot;
+		if("sleeping bag".equals(tool)) {
+			if(flag == 3 || flag == 2 || flag == 1) {
+				flag = 0;
+				equipper.sendPrivateText("You woke up! Have a good day then!");
+				return true;
+			}
+		}
 
 		return false;
 	}
@@ -983,7 +993,92 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 		if (useBehavior != null) {
 			return useBehavior.use(user, this);
 		}
+		
+		final String tool = getName();
+		if("sleeping bag".equals(tool)) {
+			// First Release Notes: Admin level must be greater than 1000 to access this feature.
+			if(((Player) user).getAdminLevel() >= 1000) {
+				if ("sleeping bag".equals(tool)) {
+					user.sendPrivateText("You are trying to use the sleeping bag right now.");
+			    	if (!user.isEquipped(tool)) {
+			    		user.sendPrivateText("You don't have " + Grammar.a_noun("sleeping bag") + " with you, please pick up to your bag first and use it directly from your bag option.");
+			    		return false;
+			    	}
+			    	
+			        Map<String, String> map = new HashMap<String, String>();
+			        map.put("amount", "1");
+			        map.put("quantity", "1");
+			        map.put("frequency", "70");
+			        map.put("persistent", "1");
+			        map.put("menu", "sleep|Use");
+			    	Item addedItem = new Item ("sleeping bag","tool","sleeping_bag",map);
+			    	addedItem.setPosition(((Player)user).getX()+1, ((Player)user).getY()+1);
+			    	addedItem.setEquipableSlots(getPossibleSlots());
+					user.getZone().add(addedItem);
+					
+					playerx = ((Player)user).getX();
+					playery = ((Player)user).getY();
+					user.sendPrivateText("You are now sleeping... Enjoy~");
+					((Player)user).drop(getName());
+					((Player)user).notifyWorldAboutChanges();
+					flag = 2;
+					HealLoop(user);
+			    	return true;
+				}
+			}else {
+				user.sendPrivateText("This feature is under testing for admin users, please wait for a while, thank for your patience.");
+			}
+		}
+
 
 		return false;
+	}
+
+	private void HealLoop(RPEntity user) {
+		new Thread(() -> {
+	        while (flag != 1 && !user.isEquipped("sleeping bag") ) {
+	        	
+	        	// We detect if the player is under attack.
+	        	// flag meaning: 1. Hold Loop 2&3. Normal Execute
+	        	if(user.isAttacked()) {
+	        		flag = 1;
+	        		user.sendPrivateText("You woke up promptly due to attacking!!! You took twice damage as normal and your Sleeping Bag has been expired!");
+	        		for(int i=0; i<user.getAttackingRPEntities().size(); i++) {
+	        			((Player) user).onDamaged(user.getAttackingRPEntities().get(i),user.getAttackingRPEntities().get(i).getAtk()*2);
+	        		}
+	        		
+	        		try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+	        	}
+	        	else {
+	        			// Normal Healing Function
+						flag = 3;
+						((Player) user).setOutfit("eyes=0");
+						//	HP Healer
+			            try {
+			            	if(counter == 3) {
+			            		counter = 0;
+								final RPEvent rpe = new RPEvent(Events.PUBLIC_TEXT);
+								rpe.put("text", "ZZZZZZZ...");
+								((Player) user).addEvent(rpe);
+								((Player) user).notifyWorldAboutChanges();
+			            	}
+			            	counter ++;
+			            	((Player) user).stop();
+							((Player) user).setPosition(playerx, playery);
+
+			            	((Player) user).heal(1);
+			            	((Player) user).notifyWorldAboutChanges();
+			                Thread.sleep(1000);
+			            } catch (InterruptedException e) {
+			                e.printStackTrace(); 
+			            }
+	        	}
+
+	        }
+	    }).start(); 
 	}
 }

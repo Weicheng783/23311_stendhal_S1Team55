@@ -21,7 +21,7 @@ import marauroa.common.game.RPAction;
 /**
  * Summon an entity.
  */
-class SummonAction implements SlashAction {
+public class SummonAction implements SlashAction {
 
 	/**
 	 * Execute a chat command.
