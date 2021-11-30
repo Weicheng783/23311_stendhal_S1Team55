@@ -116,14 +116,14 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 		lender.setOutfitColor("skin", SkinColor.LIGHT);
 		lender.setOutfitColor("dress", 0x008080); // teal
 		lender.setOutfitColor("hat", Color.BLUE);
-		lender.setDescription("You see " + lender.getName() + ", a very fashionable young man.");
+		lender.setDescription("You see " + lender.getName() + ", a very fashionable young man who sell dress and sleeping bag.");
 
 		lender.addGreeting();
 		lender.addGoodbye();
-		final String helpReply = "Please see our catalog on the desk for the outfits that I #rent out.";
+		final String helpReply = "Please see our catalog on the desk for the outfits that I #rent out and sleeping bag I can buy.";
 		lender.addHelp(helpReply);
 		lender.addOffer(helpReply);
-		lender.addJob("I run the Deniran Dress Shop. Let me know if you want to #rent an outfit.");
+		lender.addJob("I run the Deniran Dress Shop. Let me know if you want to #rent an outfit or want buy a sleeping bag.");
 
 		final List<Node> nodes = new LinkedList<Node>() {{
 			add(new Node(9, 2));
