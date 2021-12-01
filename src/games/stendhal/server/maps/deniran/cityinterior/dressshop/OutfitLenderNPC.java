@@ -12,6 +12,8 @@
 package games.stendhal.server.maps.deniran.cityinterior.dressshop;
 
 import java.awt.Color;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +33,7 @@ import games.stendhal.server.core.pathfinder.FixedPath;
 import games.stendhal.server.core.pathfinder.Node;
 import games.stendhal.server.entity.Outfit;
 import games.stendhal.server.entity.RPEntity;
+import games.stendhal.server.entity.item.Item;
 import games.stendhal.server.entity.mapstuff.sign.ShopSign;
 import games.stendhal.server.entity.npc.EventRaiser;
 import games.stendhal.server.entity.npc.SpeakerNPC;
@@ -52,7 +55,6 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 	// how long player can wear outfit (10 hours)
 	private static final int endurance = 10 * MathHelper.MINUTES_IN_ONE_HOUR;
 
-
 	public enum OutfitType {
 		// set hair to -1 to not be drawn
 		BEAR_BLUE("dress=0,hat=993"),
@@ -69,11 +71,8 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 		@Override
 		public String toString() {
 			return outfit_str;
-		}
-		
-		
+		}		
 	};
-
 
 	public class DeniranOutfit {
 		private final String label;
@@ -103,7 +102,6 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 		}
 	}
 
-
 	@Override
 	public void configureZone(final StendhalRPZone zone, final Map<String, String> attributes) {
 		initNPC(zone);
@@ -116,14 +114,14 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 		lender.setOutfitColor("skin", SkinColor.LIGHT);
 		lender.setOutfitColor("dress", 0x008080); // teal
 		lender.setOutfitColor("hat", Color.BLUE);
-		lender.setDescription("You see " + lender.getName() + ", a very fashionable young man who sell dress and sleeping bag.");
+		lender.setDescription("You see " + lender.getName() + ", a very fashionable young man who sell dress and sleeping bags or other camping equipment.");
 
 		lender.addGreeting();
 		lender.addGoodbye();
-		final String helpReply = "Please see our catalog on the desk for the outfits that I #rent out and sleeping bag I can buy.";
+		final String helpReply = "Please see our catalog on the desk for the outfits that I #rent out and sleeping bags that you can #buy .";
 		lender.addHelp(helpReply);
 		lender.addOffer(helpReply);
-		lender.addJob("I run the Deniran Dress Shop. Let me know if you want to #rent an outfit or want buy a sleeping bag.");
+		lender.addJob("I run the Deniran Dress & Camping Shop. Let me know if you want to #rent an outfit or want #buy a sleeping bag.");
 
 		final List<Node> nodes = new LinkedList<Node>() {{
 			add(new Node(9, 2));
@@ -155,6 +153,11 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 				final String outfitName = res.getChosenItemName();
 				final int price = getCharge(res, player);
 
+				if(!(player.getAdminLevel() >= 1000) && outfitName.equals("sleeping bag")) {
+					seller.say("Sorry, your admin level is restricted to buy this item!");
+					return false;
+				}
+
 				if (!player.isEquipped("money", price)) {
 					seller.say("Sorry, you don't have enough money!");
 					return false;
@@ -185,7 +188,7 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 
 				return true;
 			}
-
+			
 			@Override
 			public boolean wearsOutfitFromHere(final Player player) {
 				final Outfit currentOutfit = player.getOutfit();
@@ -199,6 +202,74 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 				return false;
 			}
 		};
+		
+		final OutfitChangerBehaviour sleeping_bag_sell = new OutfitChangerBehaviour(prices, -1, null, false) {
+			@Override
+			public boolean transactAgreedDeal(final ItemParserResult res, final EventRaiser seller, final Player player) {
+				final String outfitName = res.getChosenItemName();
+				final int price = getCharge(res, player);
+
+				if(!(player.getAdminLevel() >= 1000) && outfitName.equals("sleeping bag")) {
+					seller.say("Sorry, your admin level is restricted to buy this item!");
+					return false;
+				}
+
+				if (!player.isEquipped("money", price)) {
+					seller.say("Sorry, you don't have enough money!");
+					return false;
+				}
+
+				DeniranOutfit selected = null;
+				for (final DeniranOutfit current: outfitList) {
+					if (current.getLabel().equals(outfitName)) {
+						selected = current;
+						break;
+					}
+				}
+
+				if (selected == null) {
+					logger.error("Could not determine outfit");
+					return false;
+				}
+
+				player.drop("money", price);
+				seller.addEvent(new SoundEvent(SoundID.COMMERCE, SoundLayer.CREATURE_NOISE));
+
+				if (resetBeforeChange) {
+					// remove temp outfit before changing
+					player.returnToOriginalOutfit();
+				}
+				// Sell Player a brand new sleeping bag
+				// Appear this bag on Player's bag slot
+				Map<String, String> map = new HashMap<String, String>();
+				map.put("amount", "1");
+				map.put("quantity", "1");
+				map.put("frequency", "70");
+				map.put("persistent", "1");
+				map.put("menu", "Sleep|Use");
+				Item addedItem =  new Item ("sleeping bag", "tool", "sleeping_bag", map);
+				addedItem.setPosition(lender.getX(), lender.getY());
+				List<String> listString = Arrays.asList("bag");
+				addedItem.setEquipableSlots(listString);
+				player.equip("bag", addedItem);
+				return true;
+			}
+			
+
+			@Override
+			public boolean wearsOutfitFromHere(final Player player) {
+				final Outfit currentOutfit = player.getOutfit();
+
+				for (final DeniranOutfit possibleOutfit: outfitList) {
+					if (possibleOutfit.getOutfit().isPartOf(currentOutfit)) {
+						return true;
+					}
+				}
+
+				return false;
+			}
+
+		};
 
 		new OutfitChangerAdder() {
 			@Override
@@ -207,15 +278,25 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 				+ ". But you can #return it before it expires if you like.";
 			};
 		}.addOutfitChanger(lender, behaviour, "rent", false, true);
-
+		
+		new OutfitChangerAdder() {
+			@Override
+			protected String getReturnPhrase() {
+				return "Thank you for buying your new sleeping bag, it will definitely bring you a wonderful experience, but please don't forget to #return it when you don't need it anymore so that we can do something for the charity!";
+			};
+		}.addOutfitChanger(lender, sleeping_bag_sell, "buy", false, true);
 
 		final ShopSign catalog = outfitCatalog(outfitList);
 		catalog.setEntityClass("book_turquoise");
 		catalog.setPosition(9, 4);
-
 		zone.add(catalog);
-		
-		
+
+		// TODO: Use a new list to sell sleeping bag rather than outfitList.
+		// Do not forget to update any place with this list usage.
+		final ShopSign campingEquip = outfitCatalog(outfitList);
+		campingEquip.setEntityClass("book_yellow");
+		campingEquip.setPosition(8, 4);
+		zone.add(campingEquip);
 	}
 
 	public List<DeniranOutfit> createOutfitList() {
@@ -226,7 +307,6 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 			add(new DeniranOutfit("sleeping bag", OutfitType.SLEEPINGBAG, 2000));
 		}};
 
-		// TODO: add special outfit during Mine Town
 		/*
 		if (Occasion.MINETOWN) {
 
@@ -270,7 +350,7 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 		};
 		return catalog;
 	}
-	
+
 	 public static OutfitLenderNPC getOutfitLenderNPC() {
 		  if(instance!=null) {
 		   return instance;
@@ -284,20 +364,4 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 	 public SpeakerNPC getNPC() {
 		  return lender;
 	 }
-//		 public ShopSign getSellShopSign() {
-//		  return ;
-//		 }
-//		 public ShopSign getBuyShopSign() {
-//		  return sign_buy;
-//		}
-//	 public String getOutfitType() {
-//		 return ;
-//	 }
-
-//	public static enum getOutfitType() {
-//		private final OutfitType outfitType;
-//		// TODO Auto-generated method stub
-//		return OutfitType;
-//	}
-
 }

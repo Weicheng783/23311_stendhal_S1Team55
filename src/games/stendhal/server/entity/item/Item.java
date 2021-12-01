@@ -1010,7 +1010,7 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 			        map.put("quantity", "1");
 			        map.put("frequency", "70");
 			        map.put("persistent", "1");
-			        map.put("menu", "sleep|Use");
+			        map.put("menu", "Sleep|Use");
 			    	Item addedItem = new Item ("sleeping bag","tool","sleeping_bag",map);
 			    	addedItem.setPosition(((Player)user).getX()+1, ((Player)user).getY()+1);
 			    	addedItem.setEquipableSlots(getPossibleSlots());
@@ -1037,7 +1037,6 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 	private void HealLoop(RPEntity user) {
 		new Thread(() -> {
 	        while (flag != 1 && !user.isEquipped("sleeping bag") ) {
-	        	
 	        	// We detect if the player is under attack.
 	        	// flag meaning: 1. Hold Loop 2&3. Normal Execute
 	        	if(user.isAttacked()) {
@@ -1069,7 +1068,6 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 			            	counter ++;
 			            	((Player) user).stop();
 							((Player) user).setPosition(playerx, playery);
-
 			            	((Player) user).heal(1);
 			            	((Player) user).notifyWorldAboutChanges();
 			                Thread.sleep(1000);
