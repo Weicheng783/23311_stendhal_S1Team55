@@ -57,10 +57,10 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 
 	public enum OutfitType {
 		// set hair to -1 to not be drawn
+		SLEEPINGBAG("dress=970, hat=0"),
 		BEAR_BLUE("dress=0,hat=993"),
 		BEAR_BROWN("dress=0,hat=994"),
-		SUPERSTENDHAL("dress=973,hat=992"),
-		SLEEPINGBAG("dress=970, hat=0");
+		SUPERSTENDHAL("dress=973,hat=992");
 
 		String outfit_str;
 
@@ -202,7 +202,7 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 				return false;
 			}
 		};
-		
+
 		final OutfitChangerBehaviour sleeping_bag_sell = new OutfitChangerBehaviour(prices, -1, null, false) {
 			@Override
 			public boolean transactAgreedDeal(final ItemParserResult res, final EventRaiser seller, final Player player) {
@@ -301,10 +301,10 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 
 	public List<DeniranOutfit> createOutfitList() {
 		final List<DeniranOutfit> outfitList = new LinkedList<DeniranOutfit>() {{
+			add(new DeniranOutfit("sleeping bag", OutfitType.SLEEPINGBAG, 2000));
 			add(new DeniranOutfit("blue bear", OutfitType.BEAR_BLUE, 2500));
 			add(new DeniranOutfit("brown bear", OutfitType.BEAR_BROWN, 2500));
 			add(new DeniranOutfit("superstendhal", OutfitType.SUPERSTENDHAL, 5000));
-			add(new DeniranOutfit("sleeping bag", OutfitType.SLEEPINGBAG, 2000));
 		}};
 
 		/*

@@ -94,7 +94,7 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 	 */
 	private UseBehavior useBehavior;
 
-	private int flag;
+	public int flag;
 
 	private int playerx;
 
@@ -1005,6 +1005,10 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 			    		return false;
 			    	}
 			    	
+			    	if(flag == 4) {
+			    		return true;
+			    	}
+			    	
 			        Map<String, String> map = new HashMap<String, String>();
 			        map.put("amount", "1");
 			        map.put("quantity", "1");
@@ -1014,7 +1018,7 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 			    	Item addedItem = new Item ("sleeping bag","tool","sleeping_bag",map);
 			    	addedItem.setPosition(((Player)user).getX()+1, ((Player)user).getY()+1);
 			    	addedItem.setEquipableSlots(getPossibleSlots());
-					user.getZone().add(addedItem);
+			    	((Player)user).getZone().add(addedItem);
 					
 					playerx = ((Player)user).getX();
 					playery = ((Player)user).getY();
@@ -1034,7 +1038,7 @@ public class Item extends PassiveEntity implements TurnListener, EquipListener,
 		return false;
 	}
 
-	private void HealLoop(RPEntity user) {
+	public void HealLoop(RPEntity user) {
 		new Thread(() -> {
 	        while (flag != 1 && !user.isEquipped("sleeping bag") ) {
 	        	// We detect if the player is under attack.
