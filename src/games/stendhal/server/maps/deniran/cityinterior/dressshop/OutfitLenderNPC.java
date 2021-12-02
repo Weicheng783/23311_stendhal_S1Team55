@@ -60,7 +60,7 @@ public class OutfitLenderNPC implements ZoneConfigurator {
 		BEAR_BLUE("dress=0,hat=993"),
 		BEAR_BROWN("dress=0,hat=994"),
 		SUPERSTENDHAL("dress=973,hat=992"),
-		SLEEPINGBAG("dress=991, hat=0");
+		SLEEPINGBAG("dress=970, hat=0");
 
 		String outfit_str;
 
