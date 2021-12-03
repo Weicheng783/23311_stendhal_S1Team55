@@ -124,5 +124,10 @@ public enum ConversationStates {
 	RESTART_OFFERED,
 
 	/** Special state when players should not be able to interact with NPC. */
-	BUSY;
+	BUSY,
+
+	/** FOR BUYING FURNITURE */
+
+	ZONE_LOGGED,
+	COORDS_LOGGED;
 }

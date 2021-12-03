@@ -635,5 +635,11 @@
 		<item name="greater antidote" price="150" />
 		<item name="sedative" price="400" />
 	</shop>
+	
+	<!-- Hans: Furniture store -->
+	<shop name="deniranfurnituresell" type="sells">
+		<item name="chair1" price="100" />
+		<item name="table" price="100" />
+	</shop>
 
 </shops>

@@ -148,6 +148,11 @@
 			<attribute name="move.continuous" />
 		</portal>
 
+		<portal x="77" y="69" ref="deniran_furniture_store_entrance">
+			<destination zone="int_deniran_furniture_store" ref="entrance" />
+			<attribute name="move.continuous" />
+		</portal>
+
 		<portal x="119" y="41" ref="pawn_shop">
 			<destination zone="int_deniran_pawn_shop" ref="entrance" />
 			<attribute name="move.continuous" />
@@ -1325,6 +1330,18 @@
 
 		<!-- NPCs -->
 		<configurator class-name="games.stendhal.server.maps.deniran.cityinterior.library.LibrarianNPC" />
+
+	</zone>
+
+	<zone name="int_deniran_furniture_store" file="interiors/deniran/furniture_shop.tmx">
+
+		<portal x="6" y="14" ref="entrance">
+			<destination zone="0_deniran_city" ref="deniran_furniture_store_entrance" />
+			<attribute name="move.continuous" />
+		</portal>
+
+		<!-- NPCs -->
+		<configurator class-name="games.stendhal.server.maps.deniran.cityinterior.furnitureshop.FurnitureNPC" />
 
 	</zone>
 
