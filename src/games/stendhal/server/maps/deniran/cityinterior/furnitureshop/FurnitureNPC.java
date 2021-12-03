@@ -157,7 +157,7 @@ public class FurnitureNPC implements ZoneConfigurator {
                 ConversationStates.IDLE, "Bye!", null);
 
         npc.setPosition(6, 5);
-        npc.setOutfit(new Outfit("body=1,head=0,mouth=2,eyes=1,dress=46,mask=1,hair=3"));
+        npc.setOutfit(new Outfit("body=1,head=0,mouth=3,eyes=3,dress=34,mask=6,hair=27"));
 
         zone.add(npc);
     }
