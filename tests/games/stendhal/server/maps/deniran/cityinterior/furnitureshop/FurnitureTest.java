@@ -11,52 +11,38 @@
  ***************************************************************************/
 package games.stendhal.server.maps.deniran.cityinterior.furnitureshop;
 
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import games.stendhal.server.core.engine.StendhalRPZone;
-import games.stendhal.server.entity.mapstuff.sign.ShopSign;
 import games.stendhal.server.entity.npc.NPC;
-
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import games.stendhal.server.core.engine.SingletonRepository;
 import games.stendhal.server.entity.npc.ShopList;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import games.stendhal.server.entity.npc.SpeakerNPC;
 import utilities.QuestHelper;
 
-public class FurnitureTest  {
+public class FurnitureTest {
 
-    private static final String ZONE_NAME = "int_furniture_store";
+    private static final String ZONE_NAME = "int_deniran_furniture_store";
     private static final String npcName = "Hans the Joiner";
-
-    private static FurnitureNPC configurator;
-    private static SpeakerNPC joiner;
-    private ShopSign sign_sell;
     protected StendhalRPZone zone;
-
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-         QuestHelper.setUpBeforeClass();
+        QuestHelper.setUpBeforeClass();
     }
 
     @Before
     public void setUp() throws Exception {
         SingletonRepository.getRPWorld().onInit();
-
         zone = SingletonRepository.getRPWorld().getZone(ZONE_NAME);
-
-        configurator = FurnitureNPC.getPotionsDealerNPC();
-
-        joiner = configurator.getNPC();
     }
 
     @Test
@@ -68,8 +54,8 @@ public class FurnitureTest  {
     public void NpcExists() {
         assertNotNull(zone);
         List<String> names = new ArrayList<>();
-        for (NPC npc:
-             zone.getNPCList()) {
+        for (NPC npc :
+                zone.getNPCList()) {
             names.add(npc.getName());
         }
         assertTrue(names.contains(npcName));
@@ -77,12 +63,10 @@ public class FurnitureTest  {
 
     @Test
     public void testItemsInShop() {
-        sign_sell = configurator.getSellShopSign();
-        assertNotNull(sign_sell);
-        ShopList shoplist = sign_sell.getShopList();
+        final ShopList shops = SingletonRepository.getShopList();
+        final Map<String, Integer> prices = shops.get("deniranfurnituresell");
+        assertNotNull(prices);
 
-        assertNotNull(shoplist.get("chair"));
+        assertNotNull(prices.get("table"));
     }
-
-
 }
