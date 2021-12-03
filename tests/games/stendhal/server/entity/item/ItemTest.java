@@ -112,7 +112,7 @@ public class ItemTest {
 	public void testGetNewspaper() {
 		final newspaper mo = new newspaper("newspaper", "book", "newspaper",
 				new HashMap<String, String>());
-		assertEquals("newspapers", mo.getName());
+		assertEquals("newspaper", mo.getName());
 	}
 
 	/**
