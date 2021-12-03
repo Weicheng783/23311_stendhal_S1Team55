@@ -54,7 +54,7 @@ public class FurnitureNPC implements ZoneConfigurator {
         buildNPC(zone);
     }
 
-    public Map<String, Integer> getPrices(){
+    public Map<String, Integer> getPrices() {
         return prices;
     }
 
@@ -69,11 +69,11 @@ public class FurnitureNPC implements ZoneConfigurator {
         final Map<String, Integer> pricesSell = shops.get("deniranfurnituresell");
         prices = pricesSell;
 
-        new SellerAdder().addSeller(npc, new FurnitureSellerBehaviour(this, pricesSell),false);
+        new SellerAdder().addSeller(npc, new FurnitureSellerBehaviour(this, pricesSell), false);
 
         npc.addGreeting("Welcome to Deniran's furniture store.");
         npc.addJob("I manage this furniture store. Ask me about my #prices.");
-        npc.addHelp("If you would like to buy something, ask me about my #prices and I will tell you what I #offer.");
+        npc.addHelp("If you would like to buy something, ask me about my #prices, and set your delivery location with #zone and #coords");
 
         npc.add(ConversationStates.ANY,
                 Arrays.asList("price", "prices"),
@@ -87,7 +87,7 @@ public class FurnitureNPC implements ZoneConfigurator {
 
                         final StringBuilder sb = new StringBuilder("I sell");
                         int idx = 0;
-                        for (final String itemName: pricesSell.keySet()) {
+                        for (final String itemName : pricesSell.keySet()) {
                             if (sellCount > 1 && idx == sellCount - 1) {
                                 sb.append(" and");
                             }
@@ -104,46 +104,46 @@ public class FurnitureNPC implements ZoneConfigurator {
 
         npc.add(ConversationStates.ATTENDING, Collections.singleton("zone"), ConversationStates.ZONE_LOGGED, null, new ChatAction() {
             @Override
-             public void fire(final Player player, final Sentence sentence, final EventRaiser raiser) {
+            public void fire(final Player player, final Sentence sentence, final EventRaiser raiser) {
                 String[] parts = sentence.getOriginalText().split(" ");
-                if (parts.length != 2){
+                if (parts.length != 2) {
                     npc.say("Sorry, I didn't get that1");
                     npc.setCurrentState(ConversationStates.ATTENDING);
-                } else if (!Objects.equals(parts[0], "zone")){
+                } else if (!Objects.equals(parts[0], "zone")) {
                     npc.say("Sorry, I didn't get that2");
                     npc.setCurrentState(ConversationStates.ATTENDING);
                 } else {
                     StendhalRPZone zone = SingletonRepository.getRPWorld().getZone(parts[1]);
-                    if (zone == null){
+                    if (zone == null) {
                         npc.say("Sorry, that's not a valid zone");
                         npc.setCurrentState(ConversationStates.ATTENDING);
                     } else {
                         sendZone = zone;
-                        npc.say("OK, set zone to " + parts[1] +". Now set coordinates using #coords");
+                        npc.say("OK, set zone to " + parts[1] + ". Now set coordinates using #coords");
                     }
                 }
 
-             }
-          });
+            }
+        });
 
         npc.add(ConversationStates.ZONE_LOGGED, Collections.singleton("coords"), ConversationStates.BUY_PRICE_OFFERED, null, new ChatAction() {
             @Override
             public void fire(final Player player, final Sentence sentence, final EventRaiser raiser) {
                 String[] parts = sentence.getOriginalText().split(" ");
-                if (parts.length != 3){
+                if (parts.length != 3) {
                     npc.say("Sorry, I didn't get that1");
                     npc.setCurrentState(ConversationStates.ZONE_LOGGED);
-                } else if (!Objects.equals(parts[0], "coords")){
+                } else if (!Objects.equals(parts[0], "coords")) {
                     npc.say("Sorry, I didn't get that2");
                     npc.setCurrentState(ConversationStates.ZONE_LOGGED);
-                } else if (!parts[1].matches("-?\\d+") && !parts[2].matches("-?\\d+")){
+                } else if (!parts[1].matches("-?\\d+") && !parts[2].matches("-?\\d+")) {
                     npc.say("Sorry, those aren't valid coordinates");
                     npc.setCurrentState(ConversationStates.ZONE_LOGGED);
                 } else {
-                    if (Integer.parseInt(parts[1]) > sendZone.getWidth() || Integer.parseInt(parts[2]) > sendZone.getHeight()){
+                    if (Integer.parseInt(parts[1]) > sendZone.getWidth() || Integer.parseInt(parts[2]) > sendZone.getHeight()) {
                         npc.say("Sorry, that location is out of bounds");
                         npc.setCurrentState(ConversationStates.ZONE_LOGGED);
-                    }else {
+                    } else {
                         sendX = Integer.parseInt(parts[1]);
                         sendY = Integer.parseInt(parts[2]);
                         npc.say("OK, set coordinates to " + parts[1] + " " + parts[2] + ".");
@@ -153,6 +153,9 @@ public class FurnitureNPC implements ZoneConfigurator {
             }
         });
 
+        npc.add(ConversationStates.ANY, ConversationPhrases.GOODBYE_MESSAGES,
+                ConversationStates.IDLE, "Bye!", null);
+
         npc.setPosition(6, 5);
         npc.setOutfit(new Outfit("body=1,head=0,mouth=2,eyes=1,dress=46,mask=1,hair=3"));
 
@@ -160,15 +163,15 @@ public class FurnitureNPC implements ZoneConfigurator {
     }
 
     public static FurnitureNPC getFurnitureDealerNPC() {
-        if(instance!=null) {
+        if (instance != null) {
             return instance;
-        }
-        else {
+        } else {
             instance = new FurnitureNPC();
         }
         return instance;
 
     }
+
     public SpeakerNPC getNPC() {
         return npc;
     }
