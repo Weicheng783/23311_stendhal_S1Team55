@@ -64,6 +64,41 @@ public class SummonActionTest {
 	}
 
 	/**
+	 * Achieved the first goal of two tests,
+	 * test for summonSleepingBag.
+	 * Checking if this item exists in the game world.
+	 */
+//	@Test
+//	public final void testSummonSleepingBag() {
+//		final Player pl = PlayerTestHelper.createPlayer("hugo");
+//
+//		MockStendhalRPRuleProcessor.get().addPlayer(pl);
+//
+//		zone.add(pl);
+//		pl.setPosition(1, 1);
+//		pl.put("adminlevel", 5000);
+//		final RPAction action = new RPAction();
+//		action.put("type", "summon");
+//		action.put("item", "Sleeping Bag");
+//		action.put("x", 0);
+//		action.put("y", 0);
+//		CommandCenter.execute(pl, action);
+//		assertEquals(1, pl.getID().getObjectID());
+//		final Item Sleeping_Bag = (Item) zone.getEntityAt(0, 0);
+//		String subclass = "";
+//		try {
+//			subclass = Sleeping_Bag.get("subclass");
+//		}catch(NullPointerException e) {
+//			subclass = "no this item";
+//		}finally {
+//			assertEquals("Sleeping Bag", subclass);
+//		}
+//		
+////		assertTrue("RaidCreature", Sleeping_Bag instanceof RaidCreature);
+//	}
+	
+	
+	/**
 	 * Tests for summonRat.
 	 */
 	@Test

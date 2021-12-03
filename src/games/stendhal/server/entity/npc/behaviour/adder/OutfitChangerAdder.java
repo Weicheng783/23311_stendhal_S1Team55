@@ -100,17 +100,30 @@ public class OutfitChangerAdder {
 					@Override
 					public void fireRequestOK(final ItemParserResult res, Player player, Sentence sentence, EventRaiser raiser) {
 						// find out what the player wants to wear
-
 						// We ignore any amounts.
 						res.setAmount(1);
 
 						final int price = outfitBehaviour.getUnitPrice(res.getChosenItemName()) * res.getAmount();
 
-						raiser.say("To " + action + " a " + res.getChosenItemName() + " will cost " + price
-								+ ". Do you want to " + action + " it?");
-
 						currentBehavRes = res;
-						raiser.setCurrentState(ConversationStates.BUY_PRICE_OFFERED); // success
+						if(currentBehavRes.getChosenItemName().equals("sleeping bag")) {
+//							npc.say("Thanks! This Sleeping Bag will bring you lucky.");
+							raiser.setCurrentState(ConversationStates.ATTENDING);
+							if(outfitBehaviour.transactAgreedDeal(res, raiser, player)) {
+								if (canReturn) {
+									npc.say(getReturnPhrase());
+								}else {
+									npc.say("Thanks!");
+								}
+							}
+							currentBehavRes = null;
+							npc.endConversation();
+						}else {
+							raiser.say("To " + action + " a " + res.getChosenItemName() + " will cost " + price
+									+ ". Do you want to " + action + " it?");
+							raiser.setCurrentState(ConversationStates.BUY_PRICE_OFFERED); // success
+						}
+						
 					}
 				});
 
@@ -139,6 +152,7 @@ public class OutfitChangerAdder {
 
 						currentBehavRes = null;
 					}
+					
 				});
 
 		engine.add(ConversationStates.BUY_PRICE_OFFERED,

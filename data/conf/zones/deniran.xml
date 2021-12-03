@@ -1318,7 +1318,7 @@
 		</portal>
 
 		<!-- NPCs -->
-		<configurator class-name="games.stendhal.server.maps.deniran.cityinterior.potionsshop.PotionsDealerNPC" />
+		<configurator class-name="games.stendhal.server.maps.deniran.cityinterior.potionsshop.PotionsDealerNPC" ></configurator>
 
 	</zone>
 
@@ -1357,6 +1357,7 @@
 		<portal x="14" y="9" ref="downstairs">
 			<destination zone="int_deniran_inn_1" ref="upstairs" />
 		</portal>
+		<configurator class-name="games.stendhal.server.maps.deniran.cityinterior.dressshop.Pierre"></configurator>
 	</zone>
 
 	<zone name="int_deniran_inn_1" file="interiors/deniran/inn_1.tmx">

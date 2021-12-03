@@ -1508,7 +1508,7 @@ System.out.printf("  drop: %2d %2d\n", attackerRoll, defenderRoll);
 	 *
 	 * @return The damage actually taken (in case HP was < amount).
 	 */
-	private int damage(final int amount) {
+	public int damage(final int amount) {
 		int tempHp = getHP();
 		final int taken = Math.min(amount, tempHp);
 
