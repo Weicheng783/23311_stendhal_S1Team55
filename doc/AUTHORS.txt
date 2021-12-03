@@ -203,17 +203,24 @@ Notable contributors:
   · NPCs
 - Xinan Zou
   · Bug fixer
+  · Feature Editor
 - Weicheng Ao
   · Bug fixer
+  · Feature Editor
 - Yinan Wang
   · Bug fixer
+  · Feature Editor
 - Ruotong Ding
   · Bug fixer
+  · Feature Editor
 - Kenzi Marcel
-  ·  fixer
+  · Bug fixer
+  · Feature Editor
 - Zhongtian Zheng
   · Bug fixer
+  · Feature Editor
 - Ali Al Ghamdi
   · Bug fixer
+  · Feature Editor
 - Daniel Ross
   · Bug fixer

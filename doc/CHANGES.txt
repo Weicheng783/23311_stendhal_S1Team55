@@ -2,6 +2,14 @@ Changelog
 ---------
 ---------
 
+1.37uom
+- New features and improvements
+  - Sleeping bag now added to the world for internal tests
+  - Get to know Stendhal with a Tour Guide
+  - Buy your own house furniture Feature
+  - Daily post added
+
+
 1.36uom
 
 - bug fixes and improvements
