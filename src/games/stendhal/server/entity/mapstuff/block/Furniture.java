@@ -27,7 +27,7 @@ public class Furniture extends Block{
                     last = "1";
                     break;
                 default:
-                    return "Couldn't rotate the furniturewegfwefwef";
+                    return "Couldn't rotate the furniture";
             }
             getZone().remove(this);
             Furniture newObject = new Furniture(Style.substring(0, Style.length() - 1) + last);
