@@ -38,6 +38,7 @@ import games.stendhal.server.core.engine.SingletonRepository;
 import games.stendhal.server.core.engine.StendhalRPZone;
 import games.stendhal.server.core.rule.EntityManager;
 import games.stendhal.server.core.rule.defaultruleset.DefaultEntityManager;
+import games.stendhal.server.maps.MockStendhalRPRuleProcessor;
 import games.stendhal.server.maps.MockStendlRPWorld;
 import marauroa.common.Log4J;
 import marauroa.common.game.RPObject;
@@ -105,6 +106,45 @@ public class ItemTest {
 	}
 
 	/**
+	 * Tests for newspaper.
+	 */
+	@Test
+	public void testGetNewspaper() {
+		final newspaper mo = new newspaper("newspaper", "book", "newspaper",
+				new HashMap<String, String>());
+		assertEquals("newspaper", mo.getName());
+	}
+
+	/**
+	 * Tests for newspaper Owner.
+	 */
+	@Test
+	public void testGetNewspaperOwner() {
+
+		final newspaper mo = new newspaper("newspaper", "book", "newspaper",
+				new HashMap<String, String>());
+		assertEquals("newspaper", mo.getName());
+		mo.setOwner("you");
+		assertEquals("you",mo.getOwner());
+	}	
+	
+	/**
+	 * Tests for newspaper Usage.
+	 */
+	@Test
+	public void testNewspaperUsage() {
+		final games.stendhal.server.entity.player.Player moo = PlayerTestHelper.createPlayer("bob");
+		final newspaper mo = new newspaper("newspaper", "book", "newspaper",
+				new HashMap<String, String>());
+		assertEquals("newspaper", mo.getName());
+		MockStendhalRPRuleProcessor.get().addPlayer(moo);
+		mo.setOwner("you");
+		assertEquals("you",mo.getOwner());
+		moo.setLevel(100);
+		assertEquals(false ,mo.onUsed(moo));
+	}	
+	
+	/**
 	 * Tests for getDescription.
 	 */
 	@Test
@@ -113,7 +153,7 @@ public class ItemTest {
 				new HashMap<String, String>());
 		assertEquals("", mo.getDescription());
 	}
-
+	
 
 	/**
 	 * Tests for describe.
